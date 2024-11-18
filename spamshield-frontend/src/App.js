@@ -1,26 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import Home from './components/Home';
+import Login from './components/Login';
 
 function App() {
-  const [message, setMessage] = useState(''); // State to hold the message from Flask
-
-  // Fetch the message from the backend when the component mounts
-  useEffect(() => {
-    axios.get('http://localhost:5000/hello') // Flask backend URL
-      .then((response) => {
-        setMessage(response.data.message); // Update state with the backend message
-      })
-      .catch((error) => {
-        console.error('Error fetching the message:', error);
-        setMessage('Error fetching the message.');
-      });
-  }, []);
-
   return (
-    <div>
-      <h1>Welcome to SpamShield Frontend</h1>
-      <p>{message ? message : 'Loading...'}</p> {/* Display the message or a loading indicator */}
-    </div>
+    <Router>
+      <div style={{ textAlign: 'center', padding: '20px' }}>
+        <nav>
+          <Link to="/" style={{ margin: '10px' }}>Home</Link>
+          <Link to="/login" style={{ margin: '10px' }}>Login</Link>
+        </nav>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
