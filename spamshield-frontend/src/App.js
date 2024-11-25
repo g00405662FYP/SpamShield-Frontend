@@ -13,7 +13,6 @@ function App() {
           <Link to="/signup" style={{ margin: '10px' }}>Signup</Link>
           <Link to="/" style={{ margin: '10px' }}>Home</Link>
           <Link to="/Login" style={{ margin: '10px' }}>Login</Link>
-          <Link to="/dashboard" style={{ margin: '10px' }}>Dashboard</Link>
         </nav>
         <Routes>
           <Route path="/signup" element={<Signup />} />
