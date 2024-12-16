@@ -28,7 +28,7 @@ function Detection() {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h2>Forum: Test Spam/Ham</h2>
+      <h2>Test Spam/Ham</h2>
       <textarea
         rows="4"
         cols="50"
@@ -42,12 +42,14 @@ function Detection() {
         Classify
       </button>
       {result && (
-        <div style={{ marginTop: '20px' }}>
-          <h3>Result</h3>
-          <p><strong>Message:</strong> {result.text}</p>
-          <p><strong>Classification:</strong> {result.classification}</p>
-        </div>
-      )}
+  <div style={{ marginTop: '20px' }}>
+    <h3>Result</h3>
+    <p><strong>Message:</strong> {result.text}</p>
+    <p><strong>Classification:</strong> {result.label}</p>
+    <p><strong>Confidence Score:</strong> {result.score}</p>
+  </div>
+)}
+
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );

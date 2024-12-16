@@ -12,36 +12,34 @@ function Login() {
     e.preventDefault();
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
-      setMessage(error.message);
+      setMessage({ type: 'error', text: error.message });
     } else {
       localStorage.setItem('access_token', data.session.access_token);
-      setMessage('Login successful!');
+      setMessage({ type: 'success', text: 'Login successful!' });
       navigate('/dashboard');
     }
   };
 
   return (
-    <form onSubmit={handleLogin} style={{ textAlign: 'center', marginTop: '50px' }}>
+    <div className="container">
       <h2>Login</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        style={{ margin: '10px', padding: '10px' }}
-      />
-      <br />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        style={{ margin: '10px', padding: '10px' }}
-      />
-      <br />
-      <button type="submit" style={{ padding: '10px 20px' }}>Log In</button>
-      <p>{message}</p>
-    </form>
+      <form onSubmit={handleLogin}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit">Log In</button>
+      </form>
+      {message && <p className={`message ${message.type}`}>{message.text}</p>}
+    </div>
   );
 }
 

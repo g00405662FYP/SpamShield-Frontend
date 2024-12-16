@@ -10,30 +10,32 @@ function Signup() {
     e.preventDefault();
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
-      setMessage(error.message);
+      setMessage({ type: 'error', text: error.message });
     } else {
-      setMessage('Signup successful! Check your email for verification.');
+      setMessage({ type: 'success', text: 'Signup successful! Check your email for verification.' });
     }
   };
 
   return (
-    <form onSubmit={handleSignup}>
+    <div className="container">
       <h2>Signup</h2>
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button type="submit">Sign Up</button>
-      <p>{message}</p>
-    </form>
+      <form onSubmit={handleSignup}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        <button type="submit">Sign Up</button>
+      </form>
+      {message && <p className={`message ${message.type}`}>{message.text}</p>}
+    </div>
   );
 }
 
