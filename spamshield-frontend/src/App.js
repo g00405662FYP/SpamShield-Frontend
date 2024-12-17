@@ -8,6 +8,7 @@ import Signup from './components/signup';
 import Dashboard from './components/dashboard';
 import Detection from './components/detection';
 import './components/styles.css';
+import { FaHome, FaUserPlus, FaSignInAlt, FaShieldAlt } from 'react-icons/fa'; // Font Awesome icons
 
 // Page Transition Animation
 const pageVariants = {
@@ -109,10 +110,10 @@ function App() {
         {/* Navigation Bar */}
         <nav className="navbar">
           <div className="nav-container">
-            <Link to="/" className="nav-link">Home</Link>
-            <Link to="/signup" className="nav-link">Signup</Link>
-            <Link to="/login" className="nav-link">Login</Link>
-            <Link to="/detection" className="nav-link">Spam Detection</Link>
+            <Link to="/" className="nav-link"><FaHome style={{ marginRight: '10px' }} />Home</Link>
+            <Link to="/signup" className="nav-link"><FaUserPlus style={{ marginRight: '8px' }} />Signup</Link>
+            <Link to="/login" className="nav-link"><FaSignInAlt style={{ marginRight: '8px' }} />Login</Link>
+            <Link to="/detection" className="nav-link"><FaShieldAlt style={{ marginRight: '8px' }} />Spam Detection</Link>
           </div>
         </nav>
 
