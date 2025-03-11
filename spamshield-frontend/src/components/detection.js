@@ -42,13 +42,18 @@ function Detection() {
         Classify
       </button>
       {result && (
-  <div style={{ marginTop: '20px' }}>
-    <h3>Result</h3>
-    <p><strong>Message:</strong> {result.text}</p>
-    <p><strong>Classification:</strong> {result.label}</p>
-    <p><strong>Confidence Score:</strong> {result.confidence}</p>
-  </div>
-)}
+        <div className="result-container">
+          <h3>Result</h3>
+          <p><strong>Message:</strong> {result.text}</p>
+          <p><strong>Classification:</strong> {result.label}</p>
+          <p>
+            <strong>Confidence Score:</strong>{" "}
+            <span className={`confidence-score ${result.confidence < 0.5 ? 'low' : ''}`}>
+              {result.confidence}
+            </span>
+          </p>
+        </div>
+      )}
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
