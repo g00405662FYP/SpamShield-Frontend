@@ -15,7 +15,16 @@ function History() {
             Authorization: `Bearer ${token}`,
           },
         });
-        setHistory(response.data);
+
+        // Debug: Log the response data
+        console.log('History Response:', response.data);
+
+        // Ensure the response data is an array
+        if (Array.isArray(response.data)) {
+          setHistory(response.data);
+        } else {
+          setError('Invalid history data format.');
+        }
       } catch (err) {
         console.error('Error fetching history:', err);
         setError('Failed to fetch history. Please try again.');
@@ -26,11 +35,15 @@ function History() {
   }, []);
 
   // Prepare data for the chart
-  const chartData = history.map((entry) => ({
-    message: entry.text.substring(0, 20) + '...', // Shorten message for display
-    confidence: entry.confidence,
-    label: entry.label,
-  }));
+  const chartData = history.map((entry) => {
+    // Ensure the entry has a valid message
+    const message = entry.message ? entry.message.substring(0, 20) + '...' : 'No message';
+    return {
+      message,
+      confidence: entry.confidence || 0, // Default to 0 if confidence is missing
+      label: entry.label || 'Unknown', // Default to 'Unknown' if label is missing
+    };
+  });
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
@@ -50,10 +63,18 @@ function History() {
         <tbody>
           {history.map((entry, index) => (
             <tr key={index}>
-              <td style={{ border: '1px solid #ddd', padding: '10px' }}>{entry.text}</td>
-              <td style={{ border: '1px solid #ddd', padding: '10px' }}>{entry.label}</td>
-              <td style={{ border: '1px solid #ddd', padding: '10px' }}>{entry.confidence}</td>
-              <td style={{ border: '1px solid #ddd', padding: '10px' }}>{new Date(entry.timestamp).toLocaleString()}</td>
+              <td style={{ border: '1px solid #ddd', padding: '10px' }}>
+                {entry.message || 'No message'}
+              </td>
+              <td style={{ border: '1px solid #ddd', padding: '10px' }}>
+                {entry.label || 'Unknown'}
+              </td>
+              <td style={{ border: '1px solid #ddd', padding: '10px' }}>
+                {entry.confidence || 0}
+              </td>
+              <td style={{ border: '1px solid #ddd', padding: '10px' }}>
+                {entry.created_at ? new Date(entry.created_at).toLocaleString() : 'No timestamp'}
+              </td>
             </tr>
           ))}
         </tbody>

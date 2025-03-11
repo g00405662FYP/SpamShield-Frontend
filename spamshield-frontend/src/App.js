@@ -7,8 +7,9 @@ import Login from './components/Login';
 import Signup from './components/signup';
 import Dashboard from './components/dashboard';
 import Detection from './components/detection';
+import History from './components/history'; // Import the new History component
 import './components/styles.css';
-import { FaHome, FaUserPlus, FaSignInAlt, FaShieldAlt } from 'react-icons/fa'; // Font Awesome icons
+import { FaHome, FaUserPlus, FaSignInAlt, FaShieldAlt, FaHistory } from 'react-icons/fa'; // Font Awesome icons
 
 // Page Transition Animation
 const pageVariants = {
@@ -98,6 +99,21 @@ function AnimatedRoutes() {
             </motion.div>
           }
         />
+        {/* Add the new route for the History page */}
+        <Route
+          path="/history"
+          element={
+            <motion.div
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={pageVariants}
+              transition={pageTransition}
+            >
+              <History />
+            </motion.div>
+          }
+        />
       </Routes>
     </AnimatePresence>
   );
@@ -114,6 +130,8 @@ function App() {
             <Link to="/signup" className="nav-link"><FaUserPlus style={{ marginRight: '8px' }} />Signup</Link>
             <Link to="/login" className="nav-link"><FaSignInAlt style={{ marginRight: '8px' }} />Login</Link>
             <Link to="/detection" className="nav-link"><FaShieldAlt style={{ marginRight: '8px' }} />Spam Detection</Link>
+            {/* Add a link to the History page */}
+            <Link to="/history" className="nav-link"><FaHistory style={{ marginRight: '8px' }} />History</Link>
           </div>
         </nav>
 
