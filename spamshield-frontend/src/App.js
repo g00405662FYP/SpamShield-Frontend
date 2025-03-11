@@ -1,15 +1,15 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom'; // Remove BrowserRouter from here
 import { AnimatePresence, motion } from 'framer-motion';
+import { FaHome, FaUserPlus, FaSignInAlt, FaShieldAlt, FaHistory, FaSignOutAlt } from 'react-icons/fa';
 
 import Home from './components/Home';
 import Login from './components/Login';
 import Signup from './components/signup';
 import Dashboard from './components/dashboard';
 import Detection from './components/detection';
-import History from './components/history'; // Import the new History component
+import History from './components/history';
 import './components/styles.css';
-import { FaHome, FaUserPlus, FaSignInAlt, FaShieldAlt, FaHistory } from 'react-icons/fa'; // Font Awesome icons
 
 // Page Transition Animation
 const pageVariants = {
@@ -24,10 +24,10 @@ const pageTransition = {
 };
 
 function AnimatedRoutes() {
-  const location = useLocation(); // Tracks the current location for route transitions
+  const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait"> {/* Enables smooth page transitions */}
+    <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route
           path="/"
@@ -99,7 +99,6 @@ function AnimatedRoutes() {
             </motion.div>
           }
         />
-        {/* Add the new route for the History page */}
         <Route
           path="/history"
           element={
@@ -120,27 +119,43 @@ function AnimatedRoutes() {
 }
 
 function App() {
-  return (
-    <Router>
-      <div>
-        {/* Navigation Bar */}
-        <nav className="navbar">
-          <div className="nav-container">
-            <Link to="/" className="nav-link"><FaHome style={{ marginRight: '10px' }} />Home</Link>
-            <Link to="/signup" className="nav-link"><FaUserPlus style={{ marginRight: '8px' }} />Signup</Link>
-            <Link to="/login" className="nav-link"><FaSignInAlt style={{ marginRight: '8px' }} />Login</Link>
-            <Link to="/detection" className="nav-link"><FaShieldAlt style={{ marginRight: '8px' }} />Spam Detection</Link>
-            {/* Add a link to the History page */}
-            <Link to="/history" className="nav-link"><FaHistory style={{ marginRight: '8px' }} />History</Link>
-          </div>
-        </nav>
+  const isLoggedIn = localStorage.getItem('access_token'); // Check if the user is logged in
+  const navigate = useNavigate();
 
-        {/* Page Routes with Transitions */}
-        <div className="main-container">
-          <AnimatedRoutes />
+  const handleLogout = () => {
+    localStorage.removeItem('access_token'); // Clear the token
+    navigate('/login'); // Redirect to the login page
+  };
+
+  return (
+    <div>
+      {/* Navigation Bar */}
+      <nav className="navbar">
+        <div className="nav-container">
+          <Link to="/" className="nav-link"><FaHome style={{ marginRight: '10px' }} />Home</Link>
+          {!isLoggedIn && (
+            <>
+              <Link to="/signup" className="nav-link"><FaUserPlus style={{ marginRight: '8px' }} />Signup</Link>
+              <Link to="/login" className="nav-link"><FaSignInAlt style={{ marginRight: '8px' }} />Login</Link>
+            </>
+          )}
+          {isLoggedIn && (
+            <>
+              <Link to="/detection" className="nav-link"><FaShieldAlt style={{ marginRight: '8px' }} />Spam Detection</Link>
+              <Link to="/history" className="nav-link"><FaHistory style={{ marginRight: '8px' }} />History</Link>
+              <button onClick={handleLogout} className="nav-link logout-button">
+                <FaSignOutAlt style={{ marginRight: '8px' }} />Logout
+              </button>
+            </>
+          )}
         </div>
+      </nav>
+
+      {/* Page Routes with Transitions */}
+      <div className="main-container">
+        <AnimatedRoutes />
       </div>
-    </Router>
+    </div>
   );
 }
 
