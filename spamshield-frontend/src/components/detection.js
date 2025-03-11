@@ -46,7 +46,7 @@ function Detection() {
     <h3>Result</h3>
     <p><strong>Message:</strong> {result.text}</p>
     <p><strong>Classification:</strong> {result.label}</p>
-    <p><strong>Confidence Score:</strong> {result.score}</p>
+    <p><strong>Confidence Score:</strong> {result.confidence}</p>
   </div>
 )}
 
