@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 function History() {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
+  const [filter, setFilter] = useState('all'); // 'all', 'spam', 'ham'
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -16,10 +17,6 @@ function History() {
           },
         });
 
-        // Debug: Log the response data
-        console.log('History Response:', response.data);
-
-        // Ensure the response data is an array
         if (Array.isArray(response.data)) {
           setHistory(response.data);
         } else {
@@ -34,67 +31,87 @@ function History() {
     fetchHistory();
   }, []);
 
-  // Prepare data for the chart
-  const chartData = history.map((entry) => {
-    // Ensure the entry has a valid message
-    const message = entry.message ? entry.message.substring(0, 20) + '...' : 'No message';
-    return {
-      message,
-      confidence: entry.confidence || 0, // Default to 0 if confidence is missing
-      label: entry.label || 'Unknown', // Default to 'Unknown' if label is missing
-    };
-  });
+  const filteredHistory = filter === 'all' ? history : history.filter(entry => entry.label === filter);
+
+  const chartData = filteredHistory.map((entry) => ({
+    message: entry.message ? entry.message.substring(0, 20) + '...' : 'No message',
+    confidence: entry.confidence || 0,
+    label: entry.label || 'Unknown',
+  }));
+
+  const summary = {
+    total: history.length,
+    spam: history.filter(entry => entry.label === 'Spam').length,
+    ham: history.filter(entry => entry.label === 'Ham').length,
+    averageConfidence: (history.reduce((sum, entry) => sum + (entry.confidence || 0), 0) / history.length).toFixed(2),
+  };
 
   return (
-    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+    <div style={{ textAlign: 'center', marginTop: '50px', padding: '20px' }}>
       <h2>Spam/Ham History</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
-      {/* Display History in a Table */}
-      <table style={{ margin: '20px auto', borderCollapse: 'collapse', width: '80%' }}>
+      {/* Summary Statistics */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '20px' }}>
+        <div className="summary-card">
+          <h3>Total Messages</h3>
+          <p>{summary.total}</p>
+        </div>
+        <div className="summary-card">
+          <h3>Spam</h3>
+          <p>{summary.spam}</p>
+        </div>
+        <div className="summary-card">
+          <h3>Ham</h3>
+          <p>{summary.ham}</p>
+        </div>
+        <div className="summary-card">
+          <h3>Avg Confidence</h3>
+          <p>{summary.averageConfidence}</p>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div style={{ marginBottom: '20px' }}>
+        <button onClick={() => setFilter('all')} className={filter === 'all' ? 'active' : ''}>All</button>
+        <button onClick={() => setFilter('Spam')} className={filter === 'Spam' ? 'active' : ''}>Spam</button>
+        <button onClick={() => setFilter('Ham')} className={filter === 'Ham' ? 'active' : ''}>Ham</button>
+      </div>
+
+      {/* Table */}
+      <table className="history-table">
         <thead>
           <tr>
-            <th style={{ border: '1px solid #ddd', padding: '10px' }}>Message</th>
-            <th style={{ border: '1px solid #ddd', padding: '10px' }}>Classification</th>
-            <th style={{ border: '1px solid #ddd', padding: '10px' }}>Confidence</th>
-            <th style={{ border: '1px solid #ddd', padding: '10px' }}>Timestamp</th>
+            <th>Message</th>
+            <th>Classification</th>
+            <th>Confidence</th>
+            <th>Timestamp</th>
           </tr>
         </thead>
         <tbody>
-          {history.map((entry, index) => (
+          {filteredHistory.map((entry, index) => (
             <tr key={index}>
-              <td style={{ border: '1px solid #ddd', padding: '10px' }}>
-                {entry.message || 'No message'}
-              </td>
-              <td style={{ border: '1px solid #ddd', padding: '10px' }}>
-                {entry.label || 'Unknown'}
-              </td>
-              <td style={{ border: '1px solid #ddd', padding: '10px' }}>
-                {entry.confidence || 0}
-              </td>
-              <td style={{ border: '1px solid #ddd', padding: '10px' }}>
-                {entry.created_at ? new Date(entry.created_at).toLocaleString() : 'No timestamp'}
-              </td>
+              <td>{entry.message || 'No message'}</td>
+              <td>{entry.label || 'Unknown'}</td>
+              <td>{entry.confidence || 0}</td>
+              <td>{entry.created_at ? new Date(entry.created_at).toLocaleString() : 'No timestamp'}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Display Chart */}
+      {/* Chart */}
       <h3>Confidence Distribution</h3>
-      <BarChart
-        width={800}
-        height={400}
-        data={chartData}
-        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-      >
-        <CartesianGrid strokeDasharray="3 3" />
-        <XAxis dataKey="message" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="confidence" fill="#007bff" />
-      </BarChart>
+      <ResponsiveContainer width="100%" height={400}>
+        <BarChart data={chartData}>
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="message" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Bar dataKey="confidence" fill="#007bff" />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
