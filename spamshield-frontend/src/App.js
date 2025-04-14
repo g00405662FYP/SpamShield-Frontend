@@ -1,7 +1,7 @@
 import React from 'react';
-import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom'; // Remove BrowserRouter from here
+import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { FaHome, FaUserPlus, FaSignInAlt, FaShieldAlt, FaHistory, FaSignOutAlt } from 'react-icons/fa';
+import { FaHome, FaUserPlus, FaSignInAlt, FaShieldAlt, FaHistory, FaSignOutAlt, FaUser } from 'react-icons/fa';
 
 import Home from './components/Home';
 import Login from './components/Login';
