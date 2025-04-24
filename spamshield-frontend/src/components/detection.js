@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import './styles.css';
+import { MdWarning, MdCheckCircle } from 'react-icons/md';
+
 
 function Detection() {
   const [message, setMessage] = useState('');
@@ -91,9 +93,20 @@ function Detection() {
           role="alert"
           style={{ fontSize: '1.1rem', marginTop: '20px', borderRadius: '8px' }}
         >
-          <h4 className="alert-heading">
-            {result.label === 'Spam' ? '⚠️ Spam Detected' : '✅ Safe Message'}
+          <h4 className="alert-heading" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {result.label === 'Spam' ? (
+              <>
+                <MdWarning style={{ color: '#842029', fontSize: '1.5em' }} />
+                Spam Detected
+              </>
+            ) : (
+              <>
+                <MdCheckCircle style={{ color: '#0f5132', fontSize: '1.5em' }} />
+                Safe Message
+              </>
+            )}
           </h4>
+
           <p><strong>Message:</strong> {result.text}</p>
           <hr />
           <p><strong>Confidence Score:</strong> {(result.confidence * 100).toFixed(2)}%</p>
