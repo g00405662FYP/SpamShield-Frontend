@@ -11,7 +11,7 @@ function History() {
     const fetchHistory = async () => {
       try {
         const token = localStorage.getItem('access_token');
-        const response = await axios.get('http://localhost:5000/history', {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/history`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
