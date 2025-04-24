@@ -23,13 +23,20 @@ function Detection() {
   const readFileContent = (file) => {
     const reader = new FileReader();
     reader.onload = () => {
-      setMessage(reader.result); // Set the file content as the message
+      const raw = reader.result;
+
+      // Try to extract plain text content
+      const match = raw.match(/Content-Type: text\/plain[^]*?charset="UTF-8"[^]*?\r?\n\r?\n([^]*?)--/);
+      const messageOnly = match ? match[1].trim() : raw;
+
+      setMessage(messageOnly);
     };
     reader.onerror = () => {
       setError('Failed to read the file.');
     };
     reader.readAsText(file);
   };
+
 
   const handleClassify = async () => {
     try {
@@ -78,15 +85,26 @@ function Detection() {
         Classify
       </button>
 
-      {/* Display Result */}
       {result && (
-        <div className="result-container">
-          <h3>Result</h3>
+        <div
+          className={`alert ${result.label === 'Spam' ? 'alert-danger' : 'alert-success'}`}
+          role="alert"
+          style={{ fontSize: '1.1rem', marginTop: '20px', borderRadius: '8px' }}
+        >
+          <h4 className="alert-heading">
+            {result.label === 'Spam' ? '⚠️ Spam Detected' : '✅ Safe Message'}
+          </h4>
           <p><strong>Message:</strong> {result.text}</p>
-          <p><strong>Classification:</strong> {result.label}</p>
-          <p><strong>Confidence Score:</strong> {result.confidence && (result.confidence * 100).toFixed(2)}%</p>
+          <hr />
+          <p><strong>Confidence Score:</strong> {(result.confidence * 100).toFixed(2)}%</p>
+          {result.label === 'Spam' && (
+            <div style={{ marginTop: '10px', color: '#842029', fontWeight: 'bold' }}>
+              ⚠️ This message appears to be spam. Do not click on any links or respond.
+            </div>
+          )}
         </div>
       )}
+
 
       {/* Display Error */}
       {error && <p style={{ color: 'red' }}>{error}</p>}
