@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
-import './styles.css'; // Ensure you have styles for the dropzone
+import './styles.css';
 
 function Detection() {
   const [message, setMessage] = useState('');
@@ -35,7 +35,7 @@ function Detection() {
     try {
       const token = localStorage.getItem('access_token');
       const response = await axios.post(
-        'http://localhost:5000/classify',
+        `${process.env.REACT_APP_BACKEND_URL}/classify`,
         { text: message },
         {
           headers: {
@@ -53,7 +53,7 @@ function Detection() {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px' }}>
-      <h2>Test Spam/Ham</h2>
+      <h2>Check Your Message for Spam</h2>
 
       {/* Drag-and-Drop Area */}
       <div {...getRootProps()} className="dropzone">
@@ -84,7 +84,7 @@ function Detection() {
           <h3>Result</h3>
           <p><strong>Message:</strong> {result.text}</p>
           <p><strong>Classification:</strong> {result.label}</p>
-          <p><strong>Confidence Score:</strong> {result.confidence}</p>
+          <p><strong>Confidence Score:</strong> {result.confidence && (result.confidence * 100).toFixed(2)}%</p>
         </div>
       )}
 
