@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
 import './styles.css';
-import { MdWarning, MdCheckCircle } from 'react-icons/md';
+import { MdWarning, MdCheckCircle, MdThumbUp, MdThumbDown } from 'react-icons/md';
 
 
 function Detection() {
@@ -110,13 +110,87 @@ function Detection() {
           <p><strong>Message:</strong> {result.text}</p>
           <hr />
           <p><strong>Confidence Score:</strong> {(result.confidence * 100).toFixed(2)}%</p>
+
           {result.label === 'Spam' && (
             <div style={{ marginTop: '10px', color: '#842029', fontWeight: 'bold' }}>
               ⚠️ This message appears to be spam. Do not click on any links or respond.
             </div>
           )}
+
+          {/* Feedback buttons */}
+          <div style={{ marginTop: '20px' }}>
+            <p>Was this classification correct?</p>
+
+            <button
+              onClick={async () => {
+                try {
+                  const token = localStorage.getItem('access_token'); // you already get this for classify
+                  await axios.post(
+                    `${process.env.REACT_APP_BACKEND_URL}/feedback`,
+                    {
+                      id: result.id,                          // Pass the ID of the classified message
+                      is_classification_correct: true         // User says it was correct
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${token}`,     // Send JWT so Flask knows you're authenticated
+                      }
+                    }
+                  );
+                  alert('Thanks for your feedback!');
+                } catch (err) {
+                  console.error('Feedback error:', err);
+                  alert('Error submitting feedback.');
+                }
+              }}
+              style={{
+                marginRight: '10px',
+                padding: '6px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <MdThumbUp />
+              Yes
+            </button>
+
+            <button
+              onClick={async () => {
+                try {
+                  const token = localStorage.getItem('access_token');
+                  await axios.post(
+                    `${process.env.REACT_APP_BACKEND_URL}/feedback`,
+                    {
+                      id: result.id,
+                      is_classification_correct: false
+                    },
+                    {
+                      headers: {
+                        Authorization: `Bearer ${token}`,
+                      }
+                    }
+                  );
+                  alert('Thanks for your feedback!');
+                } catch (err) {
+                  console.error('Feedback error:', err);
+                  alert('Error submitting feedback.');
+                }
+              }}
+              style={{
+                padding: '6px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+            >
+              <MdThumbDown />
+              No
+            </button>
+          </div>
         </div>
       )}
+
 
 
       {/* Display Error */}
