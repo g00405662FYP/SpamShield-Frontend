@@ -48,7 +48,7 @@ function History() {
 
   return (
     <div style={{ textAlign: 'center', marginTop: '50px', padding: '20px' }}>
-      <h2>Spam/Ham History</h2>
+      <h2>Classification History</h2>
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       {/* Summary Statistics */}
@@ -79,26 +79,28 @@ function History() {
       </div>
 
       {/* Table */}
-      <table className="history-table">
-        <thead>
-          <tr>
-            <th>Message</th>
-            <th>Classification</th>
-            <th>Confidence</th>
-            <th>Timestamp</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredHistory.map((entry, index) => (
-            <tr key={index}>
-              <td>{entry.message || 'No message'}</td>
-              <td>{entry.label || 'Unknown'}</td>
-              <td>{entry.confidence || 0}</td>
-              <td>{entry.created_at ? new Date(entry.created_at).toLocaleString() : 'No timestamp'}</td>
+      <div style={{ overflowX: 'auto', width: '100%', marginBottom: '40px' }}>
+        <table className="history-table" style={{ width: '100%', minWidth: '600px' }}>
+          <thead>
+            <tr>
+              <th>Message</th>
+              <th>Classification</th>
+              <th>Confidence</th>
+              <th>Timestamp</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredHistory.map((entry, index) => (
+              <tr key={index}>
+                <td>{entry.message || 'No message'}</td>
+                <td>{entry.label || 'Unknown'}</td>
+                <td>{entry.confidence || 0}</td>
+                <td>{entry.created_at ? new Date(entry.created_at).toLocaleString() : 'No timestamp'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Chart */}
       <h3>Confidence Distribution</h3>
